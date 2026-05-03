@@ -1,0 +1,60 @@
+{
+  "entities": {
+    "Family": {
+      "title": "Family Tree",
+      "description": "A family tree container",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Name of the family branch" },
+        "description": { "type": "string", "description": "Description of this branch" },
+        "creatorId": { "type": "string", "description": "UID of the creator" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "creatorId"]
+    },
+    "Member": {
+      "title": "Family Member",
+      "description": "A member of a family tree",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Full name" },
+        "gender": { "type": "string", "enum": ["male", "female", "other"] },
+        "fatherId": { "type": "string", "description": "ID of the father" },
+        "motherId": { "type": "string", "description": "ID of the mother" },
+        "wifeId": { "type": "string", "description": "ID of the wife" },
+        "birthDate": { "type": "string", "format": "date" },
+        "deathDate": { "type": "string", "format": "date" },
+        "notes": { "type": "string" },
+        "familyId": { "type": "string" },
+        "creatorId": { "type": "string" }
+      },
+      "required": ["name", "gender", "familyId", "creatorId"]
+    },
+    "User": {
+      "title": "User Profile",
+      "description": "User profile information",
+      "type": "object",
+      "properties": {
+        "displayName": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "photoURL": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "user"] }
+      },
+      "required": ["displayName", "email"]
+    }
+  },
+  "firestore": {
+    "/families/{familyId}": {
+      "schema": "Family",
+      "description": "Family tree branches"
+    },
+    "/families/{familyId}/members/{memberId}": {
+      "schema": "Member",
+      "description": "Members within a family branch"
+    },
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles"
+    }
+  }
+}

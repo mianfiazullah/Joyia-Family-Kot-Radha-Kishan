@@ -1,0 +1,72 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    // Collection: families
+    // Fields: name, description, creatorId, createdAt
+    //
+    // Collection: families/{familyId}/members
+    // Fields: name, gender, fatherId, motherId, birthDate, deathDate, notes, familyId, creatorId
+    //
+    // Collection: users
+    // Fields: displayName, email, photoURL, role
+    // ===============================================================
+
+    // Helper Functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isDocOwner() {
+      return isAuthenticated() && request.auth.uid == resource.data.creatorId;
+    }
+
+    function isValidEmail(email) {
+      return email is string && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    // Validators
+    function isValidFamily(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() < 100 &&
+             data.creatorId == request.auth.uid;
+    }
+
+    function isValidMember(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() < 100 &&
+             data.gender in ['male', 'female', 'other'] &&
+             data.familyId is string &&
+             data.creatorId == request.auth.uid;
+    }
+
+    function isValidUser(data) {
+      return data.displayName is string && data.displayName.size() > 0 &&
+             data.email is string && isValidEmail(data.email);
+    }
+
+    // Rules
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow write: if isOwner(userId) && isValidUser(request.resource.data);
+    }
+
+    match /families/{familyId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && isValidFamily(request.resource.data);
+      allow update: if isDocOwner() && isValidFamily(request.resource.data);
+      allow delete: if isDocOwner();
+
+      match /members/{memberId} {
+        allow read: if isAuthenticated();
+        allow create: if isAuthenticated() && isValidMember(request.resource.data);
+        allow update: if isDocOwner() && isValidMember(request.resource.data);
+        allow delete: if isDocOwner();
+      }
+    }
+  }
+}

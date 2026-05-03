@@ -1,0 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Montserrat:wght@300;400;500;600;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Cormorant Garamond", serif;
+  --font-sans: "Montserrat", ui-sans-serif, system-ui, sans-serif;
+  --font-urdu: "Noto Nastaliq Urdu", serif;
+  
+  --color-heritage-gold: #b38b3f; /* More refined gold */
+  --color-heritage-dark: #0f1115; /* Deeper, more modern dark */
+  --color-heritage-cream: #fcfaf7;
+  --color-heritage-paper: #f5f2ed; /* Warm off-white from Recipe 12 */
+}
+
+@layer base {
+  body {
+    @apply font-sans bg-heritage-paper text-heritage-dark antialiased;
+  }
+  
+  h1, h2, h3 {
+    @apply font-serif;
+  }
+}
+
+.urdu-text {
+  font-family: "Noto Nastaliq Urdu", serif;
+  line-height: 2.5;
+}
+
+.glass-card {
+  @apply bg-white/40 backdrop-blur-xl border border-white/20 shadow-2xl;
+}
+
+.premium-shadow {
+  box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.15);
+}
+
+.node-button {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.node-button:hover {
+  r: 14;
+  stroke: var(--color-heritage-gold);
+  stroke-width: 3;
+  filter: drop-shadow(0 0 12px rgba(179, 139, 63, 0.4));
+}
+
+.tree-link {
+  transition: all 0.3s ease;
+}
+
+/* Custom Scrollbar for Premium Feel */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(179, 139, 63, 0.2);
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(179, 139, 63, 0.4);
+}
+
+@keyframes blink-red {
+  0%, 100% { fill: #ff0000; }
+  50% { fill: transparent; }
+}
+
+.search-highlight circle {
+  animation: blink-red 0.6s infinite !important;
+  stroke: #ff0000 !important;
+  stroke-width: 4px !important;
+}
+
+.search-highlight text {
+  fill: #ff0000 !important;
+  font-weight: 900 !important;
+  animation: blink-text 0.6s infinite !important;
+}
+
+@keyframes blink-text {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
